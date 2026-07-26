@@ -29,37 +29,60 @@
                     <li><a href="#">Sobre</a></li>
                 </ul>
             </nav>
-
-            <div class="icons">
-                <input type="text" id="searchInput" placeholder="Pesquisar...">
-                <button>Pesquisar</button>
-            </div>
+            
         </header>
 
-        <section class="categories">
-
-            <h2> Categorias </h2>
-
-            <div class="category-grid">
-
-                <div class="category-card">
-                    <h3>Camisas</h3>
-                </div>
-
-                <div class="category-card">
-                    <h3>Bermudas</h3>
-                </div>
-
-                <div class="category-card">
-                    <h3>Nike</h3>
-                </div>
-
-                <div class="category-card">
-                    <h3>Adidas</h3>
-                </div>
-            </div>
+        <main>
             
-        </section>
+            <section class="products-page">
+
+                <h1>Todos os Produtos</h1>
+
+                <div class="filters">
+
+                    <div class="filter-group">
+                    
+                       <label for="searchProduct">Pesquisar</label>
+
+                       <input type="text" id="searchProduct" placeholder="Digite o nome do produto...">
+
+                    </div>
+
+                    <div class="filter-group">
+
+                       <label for="categoryFilter">Categoria</label>
+
+                           <select id="categoryFilter">
+
+                               <option value="all">Todos</option>
+                               <option value="camisas">Camisas</option>
+                               <option value="Bermudas">Bermudas</option>
+                               <option value="Nike">Nike</option>
+                               <option value="Adidas">Adidas</option>
+
+                           </select>
+                    </div>
+
+                    <div class="filter-group">
+
+                           
+                        <label for="sortProducts">Ordenar</label>
+                                
+                           
+                        <select id="sortProducts">
+        
+                            <option value="">Selecione</option>
+                            <option value="price-asc">Menor Preço</option>
+                            <option value="price-desc">Maior Preço</option>
+                            <option value="name">Nome (A-Z)</option>
+                        
+                        </select>
+                        
+                    </div>
+                </div>
+
+            </section>
+        </main>
 
         <section class="products">
 
@@ -67,7 +90,9 @@
 
             <div class="products-grid">
 
-                <article class="product-card">
+                <article class="product-card"
+                         data-category="camisas"
+                         data-price="70.90">
 
                     <img src="/images/camisaFlamengo.png" alt="Camisa de Time">
 
@@ -88,7 +113,9 @@
 
                 </article>
 
-                <article class="product-card">
+                <article class="product-card"
+                         data-category="camisas"
+                         data-price="170.90">
 
                     <img src="/images/camisaBrasil.png" alt="Camisa de Time">
 
@@ -109,7 +136,9 @@
                     
                 </article>
 
-                <article class="product-card">
+                <article class="product-card"
+                         data-category="camisas"
+                         data-price="150.90">
 
                     <img src="/images/camisaPortugal.png" alt="Camisa de Time">
 
@@ -134,7 +163,7 @@
 
         </section>
 
-        <script src="../js/main.js"></script>
+        <script src="../js/products.js"></script>
         
     </body>
 </html>
