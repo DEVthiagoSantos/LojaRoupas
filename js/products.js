@@ -91,3 +91,71 @@ function sortCards() {
 }
 
 sortProducts.addEventListener("change", sortCards);
+
+const productCards = document.querySelectorAll(".product-card");
+
+productCards.forEach(card => {
+
+    card.addEventListener("click", () => {
+
+        const id = card.dataset.id;
+
+        window.location.href = `produto.html?id=${id}`;
+    });
+    
+});
+
+const addButtons = document.querySelectorAll(".add-cart");
+
+addButtons.forEach(button => {
+
+    button.addEventListener("click", (event) => {
+
+        event.stopPropagation();
+
+        addToCart(event)
+    });
+});
+
+function addToCart(event) {
+
+    const card = event.target.closest(".product-card");
+
+    const product = {
+
+        id: card.dataset.id,
+
+        name: card.dataset.name,
+
+        price: Number(card.dataset.price),
+
+        quantity: 1
+    }
+
+    console.log(product);
+
+    let cart = JSON.parse(
+    localStorage.getItem("cart")
+    ) || [];
+
+    const existingProduct = cart.find(item => {
+
+        return item.id === product.id;
+    });
+
+    if (existingProduct) {
+
+        existingProduct.quantity++;
+    } else {
+
+        cart.push(product);
+    }
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    alert("Produto adicionado ao carrinho!");
+    
+}

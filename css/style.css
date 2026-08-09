@@ -4,6 +4,7 @@
 @import url("categories.css");
 @import url("products.css");
 @import url("responsive.css");
+@import url("carrinho.css");
 
 *{
     margin: 0;
