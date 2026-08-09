@@ -2,7 +2,7 @@ const searchInput = document.querySelector("#searchProduct");
 
 const categoryFilter = document.querySelector("#categoryFilter");
 
-const cards = document.querySelectorAll(".product-card");
+const cards = document.querySelectorAll(".catalog-grid");
 
 function filterProducts() {
 
