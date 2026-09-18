@@ -2,7 +2,7 @@ const searchInput = document.querySelector("#searchProduct");
 
 const categoryFilter = document.querySelector("#categoryFilter");
 
-const cards = document.querySelectorAll(".catalog-grid");
+const cards = document.querySelectorAll(".catalog-card");
 
 function filterProducts() {
 
@@ -42,7 +42,7 @@ categoryFilter.addEventListener("change", filterProducts);
 
 const sortProducts = document.querySelector("#sortProducts");
 
-const productsGrid = document.querySelector(".products-grid");
+const productsGrid = document.querySelector(".catalog-grid");
 
 function sortCards() {
 
@@ -92,7 +92,7 @@ function sortCards() {
 
 sortProducts.addEventListener("change", sortCards);
 
-const productCards = document.querySelectorAll(".product-card");
+const productCards = document.querySelectorAll(".catalog-card");
 
 productCards.forEach(card => {
 
@@ -119,7 +119,7 @@ addButtons.forEach(button => {
 
 function addToCart(event) {
 
-    const card = event.target.closest(".product-card");
+    const card = event.target.closest(".catalog-card");
 
     const product = {
 

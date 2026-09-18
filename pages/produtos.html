@@ -24,7 +24,7 @@
             <nav class="menu">
                 <ul>
                     <li><a href="../index.html">Home</a></li>
-                    <li><a href="pages/produtos.html">Produtos</a></li>
+                    <li><a href="produtos.html">Produtos</a></li>
                     <li><a href="../pages/carrinho.html">Meu Carrinho</a></li>
                     <li><a href="#">Sobre</a></li>
                 </ul>
@@ -84,7 +84,7 @@
 
                         </select>
 
-                        <section id="sortProducts">
+                        <select id="sortProducts">
 
                             <option value="default">
                                 Ordenar
@@ -94,14 +94,14 @@
                                 Menor preço
                             </option>
 
-                            <option values="price-desc">
+                            <option value="price-desc">
                                 Maior preço
                             </option>
 
                             <option value="name">
                                 Nome
                             </option>
-                        </section>
+                        </select>
                     </div>
                 </div>
 
@@ -109,15 +109,17 @@
 
                     <!-- Produtos aqui-->
                 
-                    <article class="product-card"
+                    <article class="catalog-card"
                          data-category="camisas"
                          data-name="Camisa do Flamengo"
                          data-price="70.90"
                          data-id="1">
 
-                    <img src="/images/camisaFlamengo.png" alt="Camisa de Time">
+                    <div class="catalog-image">
+                        <img src="../images/camisaFlamengo.png" alt="Camisa de Time">
+                    </div>
 
-                    <div class="product-info">
+                    <div class="catalog-info">
 
                         <span class="category">
                             Masculino
@@ -125,7 +127,7 @@
 
                         <h3>Camisa do Flamengo</h3>
 
-                        <p class="price">
+                        <p class="catalog-price">
                             R$ 70,90
                         </p>
 
@@ -135,15 +137,17 @@
 
                 </article>
 
-                <article class="product-card"
+                <article class="catalog-card"
                          data-category="camisas"
                          data-name="Camisa do Brasil"
                          data-price="170.90"
                          data-id="2">
 
-                    <img src="/images/camisaBrasil.png" alt="Camisa de Time">
+                    <div class="catalog-image">
+                        <img src="../images/camisaBrasil.png" alt="Camisa de Time">
+                    </div>
 
-                    <div class="product-info">
+                    <div class="catalog-info">
 
                         <span class="category">
                             Masculino
@@ -151,7 +155,7 @@
 
                         <h3>Camisa do Brasil</h3>
 
-                        <p class="price">
+                        <p class="catalog-price">
                             R$ 170,90
                         </p>
 
@@ -162,15 +166,17 @@
                     
                 </article>
 
-                <article class="product-card"
+                <article class="catalog-card"
                          data-category="camisas"
                          data-name="Camisa de Portugal"
                          data-price="150.90"
                          data-id="3">
 
-                    <img src="/images/camisaPortugal.png" alt="Camisa de Time">
+                    <div class="catalog-image">
+                        <img src="../images/camisaPortugal.png" alt="Camisa de Time">
+                    </div>
 
-                    <div class="product-info">
+                    <div class="catalog-info">
 
                         <span class="category">
                             Masculino
@@ -178,7 +184,7 @@
 
                         <h3>Camisa de Portugal</h3>
 
-                        <p class="price">
+                        <p class="catalog-price">
                             R$ 150,90
                         </p>
 

@@ -88,3 +88,28 @@ function addToCart(event) {
     alert("Produto adicionado ao carrinho!");
     
 }
+
+const API_URL = "http://localhost:8081";
+
+async function loadProducts() {
+
+    try {
+
+        const response = await fetch(`${API_URL}/product`);
+
+        if (!response.ok) {
+            throw new Error("Erro ao buscar produtos");
+        }
+
+        const products = await response.json();
+
+        console.log(products);
+
+    } catch (error) {
+
+        console.error("Erro:", error);
+
+    } 
+}
+
+loadProducts;
