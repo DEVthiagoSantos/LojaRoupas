@@ -103,13 +103,85 @@ async function loadProducts() {
 
         const products = await response.json();
 
-        console.log(products);
+        console.log("Produtos recebidos da API:", products);
 
-    } catch (error) {
+        const productsGrid = document.querySelector("#productsGrid");
 
-        console.error("Erro:", error);
+        productsGrid.innerHTML = "";
 
-    } 
+        products.forEach(product => {
+
+            productsGrid.innerHTML += `
+                        <article
+                            class="product-card"
+                            data-id="${product.id}"
+                            data-name="${product.name}"
+                            data-price="${product.price}"
+                            data-category="${product.category_id}"
+                        >
+
+                        <div class="product-image">
+                             
+                             <img
+                                 src="images/${product.image}"
+                                 alt="${product.name}"
+                             >
+                        </div>
+
+                        <div class="product-info">
+
+                             <span class="category">
+                                  ${product.category_name}
+                             </span>
+
+                             <h3>
+                                 ${product.name}
+                             </h3>
+
+                             <p>
+                                ${product.description}
+                             </p>
+
+                             <span class="price">
+                                  R$
+                                  ${Number(product.price).toFixed(2).replace(".", ",")}
+                             </span>
+
+                             <button class="add-cart">
+                                  Adicionar ao carrinho
+                             </button>
+
+                        </div>
+                    </article>
+            `;
+        });
+
+    } catch(error) {
+
+        console.error("Erro: ", error);
+    }
 }
 
-loadProducts;
+loadProducts();
+
+const productGrid = document.querySelector("#productsGrid");
+
+productGrid.addEventListener("click", event => {
+
+    const card = event.target.closest(".product-card")
+
+    if (!card) {
+        return;
+    }
+
+    // Se clicou no botão de adicionar ao carrinho
+    // não abre a página do produto.
+
+    if (event.target.closest(".add-cart")) {
+        return;
+    }
+
+    const id = card.dataset.id;
+
+    window.location.href = `pages/produto.html?id=${id}`;
+})

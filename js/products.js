@@ -92,19 +92,6 @@ function sortCards() {
 
 sortProducts.addEventListener("change", sortCards);
 
-const productCards = document.querySelectorAll(".catalog-card");
-
-productCards.forEach(card => {
-
-    card.addEventListener("click", () => {
-
-        const id = card.dataset.id;
-
-        window.location.href = `produto.html?id=${id}`;
-    });
-    
-});
-
 const addButtons = document.querySelectorAll(".add-cart");
 
 addButtons.forEach(button => {
@@ -159,3 +146,98 @@ function addToCart(event) {
     alert("Produto adicionado ao carrinho!");
     
 }
+
+const API_URL = "http://localhost:8081";
+
+async function loadProducts() {
+
+    try {
+
+        const response = await fetch(`${API_URL}/product`);
+
+        if (!response.ok) {
+            throw new Error("Erro ao buscar produtos");
+        }
+
+        const products = await response.json();
+
+        console.log("Productos recebidos da API:", products);
+
+        const catalogGrid = document.querySelector("#catalogGrid");
+
+        catalogGrid.innerHTML = "";
+
+        products.forEach(product => {
+
+            catalogGrid.innerHTML += `
+                    <article
+                         class="catalog-card"
+                         data-id="${product.id}"
+                         data-name="${product.name}"
+                         data-price="${product.price}"
+                         data-category="${product.category_id}"
+                    >
+                        
+                         <div class="catalog-image">
+                              
+                              <img
+                                  src="../images/${product.image}"
+                                  alt="${product.name}"
+                              >
+                         </div>
+
+                         <div class="catalog-info">
+
+                              <span class="category">
+                                  ${product.category_name}
+                              </span>
+
+                              <h3>
+                                 ${product.name}
+                              </h3>
+
+                              <p>
+                                 ${product.description}
+                              </p>
+
+                              <span class="price">
+                                 R$
+                                 ${Number(product.price).toFixed(2).replace(".", ",")}
+                              </span>
+
+                              <button class="add-cart">
+                                 Adicionar ao carrinho
+                              </button>
+                         </div>
+
+                    </article>
+            `;
+        });
+    } catch (error) {
+        console.error("Erro:", error);
+    }
+}
+
+loadProducts();
+
+const catalogGrid = document.querySelector("#catalogGrid");
+
+catalogGrid.addEventListener("click", event => {
+
+    const card = event.target.closest(".catalog-card")
+
+    if (!card) {
+        return;
+    }
+
+    // Se clicou no botão de adicionar ao carrinho
+    // não abre a página do produto.
+
+    if (event.target.closest(".add-cart")) {
+        return;
+    }
+
+    const id = card.dataset.id;
+
+    window.location.href = `produto.html?id=${id}`;
+})

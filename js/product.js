@@ -1,45 +1,50 @@
+const API_URL = "http://localhost:8081";
+
 const params = new URLSearchParams(window.location.search);
 
 const id = params.get("id");
 
-console.log(id);
+console.log("ID do produto:", id);
 
-const products = {
+async function loadProduct() {
 
-    1: {
-        name: "Camisa do Flamengo",
-        price: 70.90,
-        image: "../images/camisaFlamengo.png"
-    },
-    
-    2: {
-        name: "Camisa do Brasil",
-        price: 170.90,
-        image: "../images/camisaBrasil.png"
-    },
+    try {
 
-    3: {
-        name: "Camisa de Portugal",
-        price: 150.90,
-        image: "../images/camisaPortugal.png"
+        const response = await fetch(`${API_URL}/product/${id}`);
+
+        if (!response.ok) {
+
+            throw new Error("Produto não encontrado");
+
+        }
+
+        const product = await response.json();
+
+        console.log("Produto recebido da API:", product);
+
+        document.querySelector("#productImage").src = 
+        `../images/${product.image}`;
+
+        document.querySelector("#productImage").alt = 
+        product.name;
+
+        document.querySelector("#productName").textContent =
+        product.name;
+
+        document.querySelector("#productPrice").textContent =
+        `R$ ${Number(product.price).toFixed(2).replace(".", ",")}`;
+
+        const addButton = document.querySelector("#addToCart");
+
+        addButton.addEventListener("click", () => {
+
+            addToCart(product);
+        })
+    } catch(error) {
+
+        console.error("Erro ao carregor produto:", error);
     }
 }
-
-const product = products[id];
-
-document.querySelector("#productImage").src = product.image;
-
-document.querySelector("#productName").textContent = product.name;
-
-document.querySelector("#productPrice").textContent = `R$ ${product.price}`;
-
-const addButtons = document.querySelector("#addToCart");
-
-addButtons.addEventListener("click", () => {
-
-    addToCart(product);
-
-})
 
 function addToCart(product) {
 
@@ -50,11 +55,11 @@ function addToCart(product) {
         name: product.name,
 
         price: Number(product.price),
-        
+
         quantity: 1
     };
 
-    console.log(cartProduct);
+    console.log("Produto para o carrinho:", cartProduct);
 
     let cart = JSON.parse(
         localStorage.getItem("cart")
@@ -63,16 +68,15 @@ function addToCart(product) {
     const existingProduct = cart.find(item => {
 
         return item.id === cartProduct.id;
-
     });
 
     if (existingProduct) {
 
         existingProduct.quantity++;
-
     } else {
 
         cart.push(cartProduct);
+
     }
 
     localStorage.setItem(
@@ -81,5 +85,6 @@ function addToCart(product) {
     );
 
     alert("Produto adicionado ao carrinho!");
-
 }
+
+loadProduct();

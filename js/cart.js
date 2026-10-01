@@ -1,30 +1,33 @@
 const cartItems = document.querySelector("#cartItems");
-
 const totalPrice = document.querySelector("#totalPrice");
 
-const cart = JSON.parse(
+let cart = JSON.parse(
     localStorage.getItem("cart")
 ) || [];
 
-console.log(cart);
+console.log("Carrinho:", cart);
 
 let total = 0;
 
+cartItems.innerHTML = "";
+
 cart.forEach(product => {
 
-    total += product.price * product.quantity;
+    total += Number(product.price) * product.quantity;
 
     cartItems.innerHTML += `
-          
-        <div class="cart-item">
+             <div class="cart-item">
 
-            <h3>${product.name}</h3>
+                 <h2>${product.name}</h3>
 
-            <p>Preço: R$ ${product.price.toFixed(2)}</p>
+                 <p>
+                    Preço: R$ ${Number(product.price)
+                        .toFixed(2).replace(".", ",")}
+                 </p>
 
-            <div class="quantity-control">
+                 <div class="quantity-control">
 
-                    <button 
+                    <button
                         class="decrease"
                         data-id="${product.id}">
                         -
@@ -40,18 +43,16 @@ cart.forEach(product => {
                         +
                     </button>
 
-            </div>
+                 </div>
 
-            <button
-                class="remove-item"
-                data-id="${product.id}"
-            >
-                Remover
-            </button>
-
-        </div>
-    `;
-
+                 <button
+                    class="remove-item"
+                    data-id="${product.id}">
+                    Remover
+                 </button>
+            
+             </div>
+    `
 });
 
 const increaseButtons = document.querySelectorAll(".increase");
@@ -64,12 +65,12 @@ increaseButtons.forEach(button => {
 
     button.addEventListener("click", increaseQuantity);
 
-})
+});
 
 decreaseButtons.forEach(button => {
-
+    
     button.addEventListener("click", decreaseQuantity);
-})
+});
 
 removeButtons.forEach(button => {
 
@@ -78,13 +79,16 @@ removeButtons.forEach(button => {
 
 function increaseQuantity(event) {
 
-    const id = event.target.dataset.id;
+    const id = String(event.target.dataset.id);
 
     let cart = JSON.parse(
         localStorage.getItem("cart")
     ) || [];
 
-    const product = cart.find(item => item.id === id);
+    const product = cart.find(item => {
+
+        return String(item.id) === id;
+    });
 
     if (product) {
 
@@ -97,26 +101,24 @@ function increaseQuantity(event) {
     );
 
     location.reload();
-
 }
 
 function decreaseQuantity(event) {
 
-    const id = event.target.dataset.id;
+    const id = String(event.target.dataset.id);
 
     let cart = JSON.parse(
         localStorage.getItem("cart")
     ) || [];
 
-    const product = cart.find(item => item.id === id);
+    const product = cart.find(item => {
 
-    if (product) {
+        return String(item.id) === id;
+    });
 
-        if (product.quantity > 1) {
+    if (product && product.quantity > 1) {
 
-            product.quantity--;
-
-        }
+        product.quantity--;
     }
 
     localStorage.setItem(
@@ -129,7 +131,7 @@ function decreaseQuantity(event) {
 
 function removeItem(event) {
 
-    const id = event.target.dataset.id;
+    const id = String(event.target.dataset.id);
 
     let cart = JSON.parse(
         localStorage.getItem("cart")
@@ -137,7 +139,7 @@ function removeItem(event) {
 
     cart = cart.filter(product => {
 
-        return product.id != id;
+        return String(product.id) !== id;
     });
 
     localStorage.setItem(
@@ -149,4 +151,5 @@ function removeItem(event) {
 
 }
 
-totalPrice.textContent = `Total: R$ ${total.toFixed(2)}`;
+totalPrice.textContent = 
+`Total: R$ ${total.toFixed(2).replace(".", ",")}`;
