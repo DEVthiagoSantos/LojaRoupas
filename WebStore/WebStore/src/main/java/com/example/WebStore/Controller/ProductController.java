@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -34,9 +35,9 @@ public class ProductController {
     }
 
     // Get - Name
-    @GetMapping("/{name}")
+    @GetMapping("/search")
     public List<ProductDTO> queryByNameLike(
-            @PathVariable String name) {
+            @RequestParam String name) {
 
         return productService.findByNameLike(name);
     }
