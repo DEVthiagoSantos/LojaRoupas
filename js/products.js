@@ -92,18 +92,6 @@ function sortCards() {
 
 sortProducts.addEventListener("change", sortCards);
 
-const addButtons = document.querySelectorAll(".add-cart");
-
-addButtons.forEach(button => {
-
-    button.addEventListener("click", (event) => {
-
-        event.stopPropagation();
-
-        addToCart(event)
-    });
-});
-
 function addToCart(event) {
 
     const card = event.target.closest(".catalog-card");
@@ -234,6 +222,9 @@ catalogGrid.addEventListener("click", event => {
     // não abre a página do produto.
 
     if (event.target.closest(".add-cart")) {
+
+        addToCart(event);
+
         return;
     }
 

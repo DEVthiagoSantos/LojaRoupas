@@ -21,31 +21,6 @@ searchInput.addEventListener("keyup", function () {
     });
 });
 
-const productsCards = document.querySelectorAll(".product-card");
-
-productsCards.forEach(card => {
-
-    card.addEventListener("click", () => {
-
-        const id = card.dataset.id;
-
-        window.location.href = `pages/produto.html?id=${id}`;
-    });
-    
-});
-
-const addButtons = document.querySelectorAll(".add-cart");
-
-addButtons.forEach(button => {
-
-    button.addEventListener("click", (event) => {
-
-        event.stopPropagation();
-
-        addToCart(event)
-    });
-});
-
 function addToCart(event) {
 
     const card = event.target.closest(".product-card");
@@ -178,6 +153,9 @@ productGrid.addEventListener("click", event => {
     // não abre a página do produto.
 
     if (event.target.closest(".add-cart")) {
+
+        addToCart(event);
+
         return;
     }
 
