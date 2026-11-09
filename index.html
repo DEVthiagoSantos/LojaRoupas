@@ -34,6 +34,26 @@
                 <input type="text" id="searchInput" placeholder="Pesquisar...">
                 <button>Pesquisar</button>
             </div>
+
+            <div class="account-area">
+
+                <div id="loggedOut">
+                    <a href="pages/login.html">Entrar</a>
+                    <a href="pages/cadastro.html">Criar conta</a>
+                </div>
+
+                <div id="loggedIn" hidden>
+
+                    <a href="pages/perfil.html" class="account-profile">
+                        <span id="accountAvatar" class="account-avatar">U</span>
+                        <span id="accountName">Usuário</span>
+                    </a>
+
+                    <button type="button" id="logoutButton">
+                        Sair
+                    </button>
+                </div>
+            </div>
         </header>
 
         <section class="hero">
@@ -109,5 +129,6 @@ combinar com o seu estilo.</p></pre>
         </section>
  
         <script src="js/main.js"></script>
+        <script src="js/account.js"></script>
     </body>
 </html>

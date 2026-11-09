@@ -22,4 +22,7 @@ public class Users {
 
     @Column(nullable = false)
     private String senha;
+
+    @Column(name = "profile_image")
+    private String profileImage;
 }
