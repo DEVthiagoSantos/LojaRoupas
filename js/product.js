@@ -46,45 +46,55 @@ async function loadProduct() {
     }
 }
 
-function addToCart(product) {
+async function addToCart(event) {
 
-    const cartProduct = {
+    const token = sessionStorage.getItem("token");
 
-        id: product.id,
+    if (!token) {
+        alert("Faça login para adicionar produtos ao carrinho.");
+        return;
+    }
 
-        name: product.name,
+    const card = event.target.closest(".product-card");
+    
+    if (!card) {
+        console.error("Card do produto não encontrado.");
+        return;
+    }
 
-        price: Number(product.price),
-
+    const product = {
+        productId: Number(card.dataset.id),
         quantity: 1
     };
 
-    console.log("Produto para o carrinho:", cartProduct);
+    console.log("Produto enviado:", product);
 
-    let cart = JSON.parse(
-        localStorage.getItem("cart")
-    ) || [];
+    try {
 
-    const existingProduct = cart.find(item => {
+        const response = await fetch(`${API_URL}/cart/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(product)
+        });
 
-        return item.id === cartProduct.id;
-    });
+        if (!response.ok) {
+            throw new Error(`Erro ao adicionar produto: ${response.status}`);
+        }
 
-    if (existingProduct) {
+        const cart = await response.json();
 
-        existingProduct.quantity++;
-    } else {
+        console.log("Carrinho atualizado:", cart);
 
-        cart.push(cartProduct);
+        alert("Produto adicionado ao carrinho!");
 
+    } catch (error) {
+
+        console.error("Erro ao adicionar produto ao carrinho:", error);
+        alert("Não foi possível adicionar o produto ao carrinho.");
     }
-
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-
-    alert("Produto adicionado ao carrinho!");
 }
 
 loadProduct();

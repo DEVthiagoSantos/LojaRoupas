@@ -28,6 +28,7 @@ if (user) {
 logoutButton.addEventListener("click", () => {
 
     sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
     window.location.href = "../index.html";
 
 });

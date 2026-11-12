@@ -1,155 +1,204 @@
+const API_URL = "http://localhost:8081";
+
 const cartItems = document.querySelector("#cartItems");
 const totalPrice = document.querySelector("#totalPrice");
 
-let cart = JSON.parse(
-    localStorage.getItem("cart")
-) || [];
+document.addEventListener("DOMContentLoaded", () => {
+    loadCart();
+})
 
-console.log("Carrinho:", cart);
+async function loadCart() {
 
-let total = 0;
+    const token = sessionStorage.getItem("token");
 
-cartItems.innerHTML = "";
+    if (!token) {
+        cartItems.innerHTML = "<p>Faça login para ter acesso ao carrinho.</p>";
+        totalPrice.textContent = "Total: R$ 0,00";
+        return;
+    }
 
-cart.forEach(product => {
+    try {
 
-    total += Number(product.price) * product.quantity;
+        const response = await fetch(`${API_URL}/cart`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-    cartItems.innerHTML += `
-             <div class="cart-item">
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar carrinho: ${response.status}`);
+        }
 
-                 <h2>${product.name}</h3>
+        const cart = await response.json();
 
-                 <p>
-                    Preço: R$ ${Number(product.price)
-                        .toFixed(2).replace(".", ",")}
-                 </p>
+        renderCart(cart);
+    } catch (error) {
 
-                 <div class="quantity-control">
+        console.error("Erro ao carregar carrinho:", error);
+        cartItems.innerHTML = "<p>Não foi possivel carregar seu carrinho.</p>";
+    }
+}
 
-                    <button
-                        class="decrease"
-                        data-id="${product.id}">
-                        -
-                    </button>
+function renderCart(cart) {
 
-                    <span>
-                        ${product.quantity}
-                    </span>
+    cartItems.innerHTML = "";
 
-                    <button
-                        class="increase"
-                        data-id="${product.id}">
-                        +
-                    </button>
+    if (!cart.items || cart.items.length === 0) {
 
-                 </div>
+        cartItems.innerHTML = "<p>Seu carrinho está vazio.</p>";
+        totalPrice.textContent = "Total: R$ 0,00";
+        return;
+    }
 
-                 <button
-                    class="remove-item"
-                    data-id="${product.id}">
-                    Remover
-                 </button>
-            
-             </div>
-    `
-});
+    cart.items.forEach(product => {
 
-const increaseButtons = document.querySelectorAll(".increase");
+        cartItems.innerHTML += `
+                <div class="cart-item">
+                        
+                      <img src="../images/${product.image}" alt="${product.name}">
 
-const decreaseButtons = document.querySelectorAll(".decrease");
+                      <h2>${product.name}</h2>
 
-const removeButtons = document.querySelectorAll(".remove-item");
+                      <p>
+                          Preço: R$ ${Number(product.price)
+                               .toFixed(2).replace(".", ",")}
+                      </p>
 
-increaseButtons.forEach(button => {
+                      <div class="quantity-control">
 
-    button.addEventListener("click", increaseQuantity);
+                           <button
+                                class="decrease"
+                                data-id="${product.productId}">
+                                -
+                           </button>
 
-});
+                           <span>${product.quantity}</span>
 
-decreaseButtons.forEach(button => {
-    
-    button.addEventListener("click", decreaseQuantity);
-});
+                           <button
+                                class="increase"
+                                data-id="${product.productId}">
+                                +
+                           </button>
 
-removeButtons.forEach(button => {
+                      </div>
 
-    button.addEventListener("click", removeItem);
-});
+                      <p>
+                          Subtotal: R$ ${Number(product.subtotal)
+                                      .toFixed(2).replace(".", ",")}
+                      </p>
+
+                      <button
+                          class="remove-item"
+                          data-id="${product.productId}">
+                          Remover
+                      </button>
+
+                </div>
+        `;
+    });
+
+    totalPrice.textContent = 
+        `Total: R$ ${Number(cart.total).toFixed(2).replace(".", ",")}`;
+
+    registerCartEvents();
+}
+
+function registerCartEvents() {
+
+    document.querySelectorAll(".increase").forEach(button => {
+
+        button.addEventListener("click", increaseQuantity);
+
+    });
+
+    document.querySelectorAll(".decrease").forEach(button => {
+        button.addEventListener("click", decreaseQuantity);
+    });
+
+    document.querySelectorAll(".remove-item").forEach(button => {
+        button.addEventListener("click", removeItem);
+    });
+}
+
+async function updateQuantity(productId, quantity) {
+
+    const token = sessionStorage.getItem("token");
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/cart/item/${productId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ quantity })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`Erro ao atualizar quantidade: ${response.status}`);
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar quantidade: ", error);
+    }
+}
 
 function increaseQuantity(event) {
 
-    const id = String(event.target.dataset.id);
+    const productId = event.currentTarget.dataset.id;
 
-    let cart = JSON.parse(
-        localStorage.getItem("cart")
-    ) || [];
-
-    const product = cart.find(item => {
-
-        return String(item.id) === id;
-    });
-
-    if (product) {
-
-        product.quantity++;
-    }
-
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
+    const quantity = Number(
+        event.currentTarget.parentElement.querySelector("span").textContent
     );
 
-    location.reload();
+    updateQuantity(productId, quantity + 1);
+    window.location.reload();
 }
 
 function decreaseQuantity(event) {
 
-    const id = String(event.target.dataset.id);
+    const productId = event.currentTarget.dataset.id;
 
-    let cart = JSON.parse(
-        localStorage.getItem("cart")
-    ) || [];
+    const quantity = Number(
+        event.currentTarget.parentElement.querySelector("span").textContent
+    );
 
-    const product = cart.find(item => {
-
-        return String(item.id) === id;
-    });
-
-    if (product && product.quantity > 1) {
-
-        product.quantity--;
+    if (quantity > 1) {
+        updateQuantity(productId, quantity - 1);
+        window.location.reload();
     }
-
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-
-    location.reload();
 }
 
-function removeItem(event) {
+async function removeItem(event) {
 
-    const id = String(event.target.dataset.id);
+    const productId = event.currentTarget.dataset.id;
+    const token = sessionStorage.getItem("token");
 
-    let cart = JSON.parse(
-        localStorage.getItem("cart")
-    ) || [];
+    try {
 
-    cart = cart.filter(product => {
+        const response = await fetch(
+            `${API_URL}/cart/item/${productId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
 
-        return String(product.id) !== id;
-    });
+        if (!response.ok) {
+            throw new Error(`Erro ao remover produto: ${response.status}`);
+        }
 
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
+        const cart = await response.json();
+        renderCart(cart);
+        window.location.reload();
+    } catch (error) {
 
-    location.reload();
-
+        console.error("Erro ao remover produto:", error);
+    }
 }
-
-totalPrice.textContent = 
-`Total: R$ ${total.toFixed(2).replace(".", ",")}`;
