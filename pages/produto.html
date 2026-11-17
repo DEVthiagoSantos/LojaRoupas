@@ -4,7 +4,7 @@
 
         <meta charset="UTF-8">
 
-        <meta name="viewport" content="width=device=width, 
+        <meta name="viewport" content="width=device-width, 
         initial-scale=1.0">
 
         <title>Produto</title>
@@ -48,19 +48,183 @@
 
                     <p class="price" id="productPrice"></p>
 
-                    <p class="description">
-                        Camisa oficial confeccionada em tecido leve,
-                        confortavel e ideal para o dia a dia principalmente
-                        o torcedor do mengão.
-                    </p>
+                    <p class="description" id="productDescription"></p>
 
-                    <button id="addToCart"
-                            class="add-cart">
-                        Adicionar ao Carrinho
+                    <button id="buyButton" class="buy-button">
+                        Comprar agora
                     </button>
                     
                 </div>
             </section>
+
+            <!-- Modal de Autenticação -->
+            <div class="auth-modal" id="authModal">
+
+                <div class="auth-content">
+
+                    <div class="auth-header">
+
+                        <h2>Identifique-se</h2>
+
+                        <button type="button" id="closeAuthModal">
+                            &times;
+                        </button>
+
+                    </div>
+
+                    <p>
+                        Para continuar sua compra, entre na sua conta
+                        ou crie um cadastro.
+                    </p>
+
+                    <div class="auth-actions">
+
+                        <a href="login.html" class="auth-login">
+                            Fazer Login
+                        </a>
+
+                        <a href="cadastro.html" class="auth-register">
+                            Cadastrar-se
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de compra -->
+
+            <div class="purchase-modal" id="purchaseModal">
+
+                <div class="purchase-content">
+
+                    <div class="purchase-header">
+
+                        <h2>Finalizar compra</h2>
+
+                        <button type="button" id="closePurchaseModal">
+                            &times;
+                        </button>
+
+                    </div>
+
+                    <form id="purchaseForm">
+
+                        <!-- Dados pessoais -->
+
+                        <section class="purchase-section">
+
+                            <h3>Dados pessoais</h3>
+
+                            <input
+                                type="text"
+                                id="customerName"
+                                placeholder="Nome completo"
+                                required>
+
+                            <input
+                                type="email"
+                                id="customerEmail"
+                                placeholder="E-email"
+                                required>
+
+                            <input
+                                type="tel"
+                                id="customerPhone"
+                                placeholder="Telefone"
+                                required>
+
+                        </section>
+
+                        <!-- Endereço -->
+
+                        <section class="purchase-section">
+
+                            <h3>Endereço de entrega</h3>
+
+                            <input
+                                type="text"
+                                id="customerCep"
+                                placeholder="CEP"
+                                required>
+
+                            <input
+                                type="text"
+                                id="customerStreet"
+                                placeholder="Rua"
+                                required>
+
+                            <input
+                                type="text"
+                                id="customerNumber"
+                                placeholder="Número"
+                                required>
+
+                            <input
+                                type="text"
+                                id="customerNeighborhood"
+                                placeholder="Bairro"
+                                required
+                                >
+
+                            <input
+                                type="text"
+                                id="customerCity"
+                                placeholder="Cidade"
+                                required
+                            >
+
+                            <input
+                                type="text"
+                                id="customerState"
+                                placeholder="Estado"
+                                required
+                            >
+
+                        </section>
+
+                        <!-- Pagamento -->
+                         <section class="purchase-section">
+
+                            <h3>Forma de pagamento</h3>
+
+                            <select id="paymentMethod" required>
+
+                                <option value="">
+                                    Selecione uma opção
+                                </option>
+
+                                <option value="PIX">
+                                    PIX
+                                </option>
+
+                                <option value="CREDIT_CARD">
+                                    Cartão de crédito
+                                </option>
+
+                                <option value="BOLETO">
+                                    Boleto bancário
+                                </option>
+
+                            </select>
+                         </section>
+
+                         <button type="submit" id="confirmPurchase">
+                            Continuar
+                         </button>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="related-products-header">
+                <h2>Você também pode gostar</h2>
+                <p>Confira outros produtos que podem te interessar.</p>
+            </div>
+
+            <div class="related-products-grid" id="relatedProducts">
+
+                <!-- Produtos carregados pela API -->
+            </div>
         </main>
 
         <footer>

@@ -2,38 +2,28 @@ const searchInput = document.querySelector("#searchProduct");
 
 const categoryFilter = document.querySelector("#categoryFilter");
 
-const cards = document.querySelectorAll(".catalog-card");
-
 function filterProducts() {
 
-    const search = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll(".catalog-card");
+
+    const search = searchInput.value.trim().toLowerCase();
 
     const category = categoryFilter.value;
 
-    cards.forEach(card=>{
+    cards.forEach(card => {
 
         const name = card.querySelector("h3")
         .textContent.toLowerCase();
-
 
         const cardCategory = card.dataset.category;
 
         const matchName = name.includes(search);
 
-        const matchCategory = category === "all" || cardCategory === category;
-    
-        if (matchName && matchCategory) {
+        const matchCategory =
+              category === "all" || cardCategory === category;
 
-            card.hidden = false;
-        
-        } else {
-
-            card.hidden = true;
-
-        }
-
+        card.hidden = !(matchName && matchCategory);
     });
-
 }
 
 searchInput.addEventListener("input", filterProducts);
@@ -42,11 +32,13 @@ categoryFilter.addEventListener("change", filterProducts);
 
 const sortProducts = document.querySelector("#sortProducts");
 
-const productsGrid = document.querySelector(".catalog-grid");
+const productsGrid = document.querySelector("#catalogGrid");
 
 function sortCards() {
 
-    const cardsArray = Array.from(cards);
+    const cardsArray = Array.from(
+        document.querySelectorAll(".catalog-card")
+    );
 
     const option = sortProducts.value;
 
@@ -191,10 +183,6 @@ async function loadProducts() {
                               <h3>
                                  ${product.name}
                               </h3>
-
-                              <p>
-                                 ${product.description}
-                              </p>
 
                               <span class="price">
                                  R$

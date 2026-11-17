@@ -1,25 +1,26 @@
 const searchInput = document.querySelector("#searchInput");
 
-const productCards = document.querySelectorAll(".product-card");
+const productsGrid = document.querySelector("#productsGrid");
 
-searchInput.addEventListener("keyup", function () {
 
-    const search = searchInput.value.toLowerCase();
+function filterFeaturedProducts() {
 
-    productCards.forEach(function (card){
+    const search = searchInput.value.trim().toLowerCase();
+
+    const cards = productsGrid.querySelectorAll(".product-card");
+
+    cards.forEach(card => {
 
         const productName = card.querySelector("h3")
         .textContent.toLowerCase();
 
-        if (productName.includes(search)) {
-
-            card.style.display = "block";
-        } else {
-
-            card.style.display = "none";
-        }
+        card.style.display = productName.includes(search)
+             ? ""
+             : "none";
     });
-});
+}
+
+searchInput.addEventListener("input", filterFeaturedProducts);
 
 async function addToCart(event) {
 
@@ -120,10 +121,6 @@ async function loadProducts() {
                              <h3>
                                  ${product.name}
                              </h3>
-
-                             <p>
-                                ${product.description}
-                             </p>
 
                              <span class="price">
                                   R$
