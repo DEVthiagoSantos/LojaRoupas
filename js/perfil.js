@@ -1,194 +1,227 @@
-const user = JSON.parse(sessionStorage.getItem("user"));
 
-const profileImage = document.querySelector("#profileImage");
-const photoInput = document.querySelector("#photoInput");
+(() => {
 
-const profileName = document.querySelector("#profileName");
-const profileEmail = document.querySelector("#profileEmail");
+    const API_URL = "http://localhost:8081";
 
-const nameInput = document.querySelector("#name");
-const emailInput = document.querySelector("#email");
+    let user = JSON.parse(sessionStorage.getItem("user"));
 
-const profileForm = document.querySelector("#profileForm");
-const profileMessage = document.querySelector("#profileMessage");
+    const profileImage = document.querySelector("#profileImage");
+    const photoInput = document.querySelector("#photoInput");
 
-const editProfileButton = document.querySelector("#editProfileButton");
-const saveProfileButton = document.querySelector("#saveProfileButton");
+    const profileName = document.querySelector("#profileName");
+    const profileEmail = document.querySelector("#profileEmail");
 
-let selectedPhoto = null;
+    const nameInput = document.querySelector("#name");
+    const emailInput = document.querySelector("#email");
 
-// Verifica se existe um usuário conectado
-if (!user) {
-    window.location.href = "login.html";
-}
+    const profileForm = document.querySelector("#profileForm");
+    const profileMessage = document.querySelector("#profileMessage");
 
-if (user) {
+    const editProfileButton = document.querySelector("#editProfileButton");
+    const saveProfileButton = document.querySelector("#saveProfileButton");
 
-    profileName.textContent = user.name;
-    profileEmail.textContent = user.email;
+    let currentImageURL = null;
 
-    nameInput.value = user.name;
-    emailInput.value = user.email;
-
-}
-
-// Habilita a edição dos campos
-editProfileButton.addEventListener("click", () => {
-
-    nameInput.readOnly = false;
-    emailInput.readOnly = false;
-
-    editProfileButton.hidden = true;
-    saveProfileButton.hidden = false;
-
-    profileMessage.textContent = "";
-});
-
-photoInput.addEventListener("change", async () => {
-
-    const file = photoInput.files[0];
-
-    if (!file) {
+    // Verifica se os elementos do perfil existem nesta página
+    if (!profileImage || !profileForm) {
         return;
     }
 
-    const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp"
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-        profileMessage.textContent = "Selecione uma image JPEG, PNG ou WEBP.";
-        profileMessage.style.color = "red";
-        photoInput.value = "";
+    // Verifica se existe um usuário conectado
+    if (!user) {
         return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-        profileMessage.textContent = "A imagem não pode ultrapassar 5 MB";
-        profileMessage.style.color = "red";
-        photoInput.value = "";
-        return;
+    // Preenche os dados do usuário
+    function carregarDadosUsuario() {
+
+        profileName.textContent = user.name;
+        profileEmail.textContent = user.email;
+
+        nameInput.value = user.name;
+        emailInput.value = user.email;
+
     }
 
-    const imageUrl = URL.createObjectURL(file);
-    profileImage.src = imageUrl;
+    carregarDadosUsuario();
 
-    const formData = new FormData();
-    formData.append("file", file);
+    // Habilita a edição dos campos
+    editProfileButton.addEventListener("click", () => {
 
-    const token = sessionStorage.getItem("token");
+        nameInput.readOnly = false;
+        emailInput.readOnly = false;
 
-    try {
-        
-        const response = await fetch(`${API_URL}/users/profile-image`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: formData
-        });
+        editProfileButton.hidden = true;
+        saveProfileButton.hidden = false;
 
-        if (!response.ok) {
-            throw new Error(`Erro no upload: ${response.status}`);
+        profileMessage.textContent = "";
+
+    });
+
+    // Salva os dados do perfil
+    profileForm.addEventListener("submit", (event) => {
+
+        event.preventDefault();
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+
+        if (!name || !email) {
+
+            profileMessage.textContent = "Preencha todos os campos.";
+            profileMessage.style.color = "red";
+
+            return;
         }
 
-        await carregarImagemPerfil();
+        user = {
+            ...user,
+            name: name,
+            email: email
+        };
 
-        profileMessage.textContent = "Foto de perfil atualizada";
+        sessionStorage.setItem("user", JSON.stringify(user));
+
+        carregarDadosUsuario();
+
+        // Atualiza também o cabeçalho
+        const accountName = document.querySelector("#accountName");
+        const accountAvatar = document.querySelector("#accountAvatar");
+
+        if (accountName) {
+            accountName.textContent = user.name;
+        }
+
+        if (accountAvatar) {
+            accountAvatar.textContent = user.name.trim().charAt(0).toUpperCase();
+        }
+
+        nameInput.readOnly = true;
+        emailInput.readOnly = true;
+
+        editProfileButton.hidden = false;
+        saveProfileButton.hidden = true;
+
+        profileMessage.textContent = "Dados atualizados nesta sessão.";
         profileMessage.style.color = "green";
 
-    } catch (error) {
+    });
 
-        console.error("Erro ao atualizar foto:", error);
+    // Carrega a imagem de perfil
+    async function carregarImagemPerfil() {
 
-        profileMessage.textContent = "Não foi possivel atualizar a foto.";
-        profileMessage.style.color = "red";
+        const token = sessionStorage.getItem("token");
 
-        await carregarImagemPerfil();
-
-    } finally {
-        URL.revokeObjectURL(imageUrl);
-        photoInput.value = "";
-    }
-
-});
-
-profileForm.addEventListener("submit", (event) => {
-
-    event.preventDefault();
-
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-
-    if (!name || !email) {
-        profileMessage.textContent = "Preencha todos os campos.";
-        profileMessage.style.color = "red";
-        return;
-    }
-
-    const updateUser = {
-        ...user,
-        name: name,
-        email: email
-    };
-
-    sessionStorage.setItem("user", JSON.stringify(updateUser));
-
-    profileName.textContent = name;
-    profileEmail.textContent = email;
-
-    nameInput.readOnly = true;
-    emailInput.readOnly = true;
-
-    editProfileButton.hidden = false;
-    saveProfileButton.hidden = true;
-
-    profileMessage.textContent = "Dados atualizados nesta sessão.";
-    profileMessage.style.color = "green";
-});
-
-const API_URL = "http://localhost:8081";
-
-document.addEventListener("DOMContentLoaded", () => {
-    carregarImagemPerfil();
-});
-
-async function carregarImagemPerfil() {
-    const token = sessionStorage.getItem("token");
-    const profileImage = document.querySelector("#profileImage");
-
-    if (!token) {
-        console.error("Usuário não autenticado.");
-        return;
-    }
-
-    if (!profileImage) {
-        console.error("Elemento #profileImage não encontrado.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/users/profile-image`, {
-
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar imagem: ${response.status}`);
+        if (!token) {
+            return;
         }
 
-        const imageBlob = await response.blob();
+        try {
 
-        const imageURL = URL.createObjectURL(imageBlob);
+            const response = await fetch(`${API_URL}/users/profile-image`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
 
-        profileImage.src = imageURL;
-    } catch (error) {
+            if (!response.ok) {
+                throw new Error(`Erro ao buscar imagem: ${response.status}`);
+            }
 
-        console.error("Erro ao carregar imagem de perfil:", error);
+            const imageBlob = await response.blob();
+
+            if (currentImageURL) {
+                URL.revokeObjectURL(currentImageURL);
+            }
+
+            currentImageURL = URL.createObjectURL(imageBlob);
+
+            profileImage.src = currentImageURL;
+
+        } catch (error) {
+
+            console.error("Erro ao carregar imagem de perfil:", error);
+
+        }
+
     }
-}
+
+    carregarImagemPerfil();
+
+    // Envia uma nova foto de perfil
+    photoInput.addEventListener("change", async () => {
+
+        const file = photoInput.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+
+            profileMessage.textContent = "Selecione uma imagem JPEG, PNG ou WEBP.";
+            profileMessage.style.color = "red";
+
+            photoInput.value = "";
+
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+
+            profileMessage.textContent = "A imagem não pode ultrapassar 5 MB.";
+            profileMessage.style.color = "red";
+
+            photoInput.value = "";
+
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append("file", file);
+
+        const token = sessionStorage.getItem("token");
+
+        try {
+
+            const response = await fetch(`${API_URL}/users/profile-image`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erro no upload: ${response.status}`);
+            }
+
+            await carregarImagemPerfil();
+
+            profileMessage.textContent = "Foto de perfil atualizada.";
+            profileMessage.style.color = "green";
+
+        } catch (error) {
+
+            console.error("Erro ao atualizar foto:", error);
+
+            profileMessage.textContent = "Não foi possível atualizar a foto.";
+            profileMessage.style.color = "red";
+
+        } finally {
+
+            photoInput.value = "";
+
+        }
+
+    });
+
+})();

@@ -10,6 +10,7 @@
         <title>Produto</title>
 
         <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/perfil.css">
 
      </head>
 
@@ -29,8 +30,135 @@
                     <li><a href="#">Sobre</a></li>
                 </ul>
             </nav>
+
+            <div class="account-area">
+
+                <div id="loggedOut">
+                    <a href="../pages/login.html">Entrar</a>
+                    <a href="../pages/cadastro.html">Criar conta</a>
+                </div>
+
+                <div id="loggedIn" hidden>
+
+                    <button type="button" id="openProfileMenu" class="account-profile">
+
+                        <span id="accountAvatar" class="account-avatar">U</span>
+
+                        <span id="accountName">Usuário</span>
+
+                    </button>
+
+                </div>
+            </div>
             
         </header>
+
+        <!-- Fundo do menu de perfil -->
+
+        <div class="profile-overlay" id="profileOverlay">
+
+            <!-- Menu lateral -->
+             <aside class="profile-drawer" id="profileDrawer">
+
+                <div class="drawer-header">
+
+                    <h2>Menu Perfil</h2>
+
+                    <button type="button" id="closeProfileMenu">
+                        &times;
+                    </button>
+
+                </div>
+
+                <section class="profile-card">
+
+                    <div class="profile-header">
+
+                        <div class="profile-photo-container">
+
+                            <img
+                                src="/images/default-profile.png"
+                                alt="Foto de Perfil"
+                                id="profileImage"
+                            >
+
+                            <label for="photoInput" class="photo-edit">
+                                Alterar foto
+                            </label>
+
+                            <input
+                                type="file"
+                                id="photoInput"
+                                accept="image/*"
+                                hidden
+                            >
+
+                        </div>
+
+                        <h1 id="profileName">Nome do Usuário</h1>
+
+                        <p id="profileEmail">email@exemplo.com</p>
+
+                    </div>
+
+                    <div class="profile-divider"></div>
+
+                    <form id="profileForm">
+
+                        <h2>Informações pessoais</h2>
+
+                        <div class="profile-form-group">
+
+                            <label for="name">Nome completo</label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                readonly
+                                required
+                            >
+
+                        </div>
+
+                        <div class="profile-form-group">
+
+                            <label for="email">E-mail</label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                readonly
+                                required
+                            >
+
+                        </div>
+
+                        <p id="profileMessage" role="status"></p>
+
+                        <div class="profile-buttons">
+
+                            <button type="button" id="editProfileButton">
+                                Editar perfil
+                            </button>
+
+                            <button
+                                type="submit"
+                                id="saveProfileButton"
+                                hidden
+                            >
+                                Salvar alterações
+                            </button>
+                        </div>
+                    </form>
+
+                    <button type="button" id="logoutButton" class="profile-logout">
+                        Sair da conta
+                    </button>
+                </section>
+             </aside>
+        </div>
 
         <main>
 
@@ -232,6 +360,8 @@
         </footer>
 
         <script src="/js/product.js"></script>
+        <script src="/js/account.js"></script>
+        <script src="/js/perfil.js"></script>
 
      </body>
 </html>

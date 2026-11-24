@@ -3,32 +3,73 @@ const loggedIn = document.querySelector("#loggedIn");
 
 const accountName = document.querySelector("#accountName");
 const accountAvatar = document.querySelector("#accountAvatar");
+
 const logoutButton = document.querySelector("#logoutButton");
+
+const openProfileMenu = document.querySelector("#openProfileMenu");
+const profileOverlay = document.querySelector("#profileOverlay");
+const closeProfileMenu = document.querySelector("#closeProfileMenu");
 
 const user = JSON.parse(sessionStorage.getItem("user"));
 
+// Verifica se existe um usuário autenticado
 if (user) {
 
-    loggedOut.hidden = true;
-    loggedIn.hidden = false;
+    if (loggedOut) loggedOut.hidden = true;
+    if (loggedIn) loggedIn.hidden = false;
 
-    accountName.textContent = user.name;
+    if (accountName) {
+        accountName.textContent = user.name;
+    }
 
-    accountAvatar.textContent = user.name
-                 .trim()
-                 .charAt(0)
-                 .toUpperCase();
+    if (accountAvatar) {
+        accountAvatar.textContent = user.name.trim().charAt(0)
+        .toUpperCase();
+    }
+
+
 } else {
-
-    loggedOut.hidden = false;
-    loggedIn.hidden = true;
-
+    if (loggedOut) loggedOut.hidden = false;
+    if (loggedIn) loggedIn.hidden = true;
 }
 
-logoutButton.addEventListener("click", () => {
+// Abre o painel de perfil
+if (openProfileMenu && profileOverlay) {
 
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("token");
-    window.location.href = "../index.html";
+    openProfileMenu.addEventListener("click", () => {
+        profileOverlay.classList.add("active");
+    });
+}
 
-});
+// Fecha o painel pelo botão X
+if (closeProfileMenu && profileOverlay) {
+    
+    closeProfileMenu.addEventListener("click", () => {
+        profileOverlay.classList.remove("active");
+    });
+}
+
+// Fecha o painel ao clicar fora dele
+if (profileOverlay) {
+
+    profileOverlay.addEventListener("click", (event) => {
+
+        if (event.target === profileOverlay) {
+            profileOverlay.classList.remove("active");
+        }
+    });
+}
+
+// Encerra a sessão
+if (logoutButton) {
+
+    logoutButton.addEventListener("click", () => {
+
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+
+        window.location.href = window.location.pathname.includes("/pages/")
+        ? "../index.html"
+        : "index.html";
+    });
+}
